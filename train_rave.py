@@ -60,6 +60,7 @@ if __name__ == "__main__":
         BATCH = 8
 
         NAME = None
+        OUT_PATH = ""
 
     args.parse_args()
 
@@ -149,7 +150,7 @@ if __name__ == "__main__":
         val_check["check_val_every_n_epoch"] = nepoch
 
     trainer = pl.Trainer(
-        logger=pl.loggers.TensorBoardLogger(path.join("runs", args.NAME),
+        logger=pl.loggers.TensorBoardLogger(path.join(args.OUT_PATH, "runs", args.NAME),
                                             name="rave"),
         gpus=use_gpu,
         callbacks=[validation_checkpoint, last_checkpoint],
