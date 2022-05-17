@@ -19,6 +19,7 @@ import soundfile as sf
 
 
 class args(Config):
+    ID = '' # UNIQUE ID FOR FILE NAME
     CKPT = None  # PATH TO YOUR PRETRAINED CHECKPOINT
     WAV_FOLDER = None  # PATH TO YOUR WAV FOLDER
     OUT = "./reconstruction/"
@@ -58,7 +59,7 @@ audios = tqdm(list(Path(args.WAV_FOLDER).rglob("*.wav")))
 # RECONSTRUCTION
 makedirs(args.OUT, exist_ok=True)
 for audio in audios:
-    audio_name = path.splitext(path.basename(audio))[0]
+    audio_name = id+'_'+path.splitext(path.basename(audio))[0]
     audios.set_description(audio_name)
 
     # LOAD AUDIO TO TENSOR
