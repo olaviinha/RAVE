@@ -59,7 +59,7 @@ audios = tqdm(list(Path(args.WAV_FOLDER).rglob("*.wav")))
 # RECONSTRUCTION
 makedirs(args.OUT, exist_ok=True)
 for audio in audios:
-    audio_name = id+'_'+path.splitext(path.basename(audio))[0]
+    audio_name = args.ID+'_'+path.splitext(path.basename(audio))[0]
     audios.set_description(audio_name)
 
     # LOAD AUDIO TO TENSOR
