@@ -6,6 +6,12 @@ Official implementation of _RAVE: A variational autoencoder for fast and high-qu
 
 If you use RAVE as a part of a music performance or installation, be sure to cite either this repository or the article !
 
+## Colab
+
+We propose a Google Colab handling the training of a RAVE model on a custom dataset !
+
+[![colab_badge](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1aK8K186QegnWVMAhfnFRofk_Jf7BBUxl?usp=sharing)
+
 ## Installation
 
 RAVE needs `python 3.9`. Install the dependencies using
@@ -69,3 +75,17 @@ You can also use RAVE as a VST audio plugin using the RAVE vst !
 ## Discussion
 
 If you have questions, want to share your experience with RAVE or share musical pieces done with the model, you can use the [Discussion tab](https://github.com/acids-ircam/RAVE/discussions) !
+
+## Demonstation
+
+### RAVE x nn~
+
+Demonstration of what you can do with RAVE and the nn~ external for maxmsp !
+
+[![RAVE x nn~](http://img.youtube.com/vi/dMZs04TzxUI/mqdefault.jpg)](https://www.youtube.com/watch?v=dMZs04TzxUI)
+
+### embedded RAVE
+
+Using nn~ for puredata, RAVE can be used in realtime on embedded platforms !
+
+[![RAVE x nn~](http://img.youtube.com/vi/jAIRf4nGgYI/mqdefault.jpg)](https://www.youtube.com/watch?v=jAIRf4nGgYI)

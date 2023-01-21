@@ -7,6 +7,7 @@ from rave.core import search_for_run
 from prior.model import Model
 from effortless_config import Config
 from os import environ, path
+import os
 
 from udls import SimpleDataset, simple_audio_preprocess
 import numpy as np
@@ -70,15 +71,16 @@ dataset = SimpleDataset(
     args.WAV,
     preprocess_function=simple_audio_preprocess(model.sr, args.N_SIGNAL),
     split_set="full",
-    transforms=lambda x: x.reshape(1, -1),
+    transforms=lambda x: x.reshape(1, -1).astype(np.float32),
 )
 
 val = max((2 * len(dataset)) // 100, 1)
 train = len(dataset) - val
 train, val = random_split(dataset, [train, val])
 
-train = DataLoader(train, args.BATCH, True, drop_last=True, num_workers=8)
-val = DataLoader(val, args.BATCH, False, num_workers=8)
+num_workers = 0 if os.name == "nt" else 8
+train = DataLoader(train, args.BATCH, True, drop_last=True, num_workers=num_workers)
+val = DataLoader(val, args.BATCH, False, num_workers=num_workers)
 
 # CHECKPOINT CALLBACKS
 validation_checkpoint = pl.callbacks.ModelCheckpoint(

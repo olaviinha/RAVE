@@ -9,6 +9,7 @@ from udls import SimpleDataset, simple_audio_preprocess
 from effortless_config import Config, setting
 import pytorch_lightning as pl
 from os import environ, path
+import os
 import numpy as np
 
 import GPUtil as gpu
@@ -91,13 +92,18 @@ if __name__ == "__main__":
     x = torch.zeros(args.BATCH, 2**14)
     model.validation_step(x, 0)
 
+    preprocess = lambda name: simple_audio_preprocess(
+        args.SR,
+        2 * args.N_SIGNAL,
+    )(name).astype(np.float16)
+
     dataset = SimpleDataset(
         args.PREPROCESSED,
         args.WAV,
-        preprocess_function=simple_audio_preprocess(args.SR,
-                                                    2 * args.N_SIGNAL),
+        preprocess_function=preprocess,
         split_set="full",
         transforms=Compose([
+            lambda x: x.astype(np.float32),
             RandomCrop(args.N_SIGNAL),
             RandomApply(
                 lambda x: random_phase_mangle(x, 20, 2000, .99, args.SR),
@@ -116,8 +122,10 @@ if __name__ == "__main__":
         generator=torch.Generator().manual_seed(42),
     )
 
-    train = DataLoader(train, args.BATCH, True, drop_last=True, num_workers=8)
-    val = DataLoader(val, args.BATCH, False, num_workers=8)
+
+    num_workers = 0 if os.name == "nt" else 8
+    train = DataLoader(train, args.BATCH, True, drop_last=True, num_workers=num_workers)
+    val = DataLoader(val, args.BATCH, False, num_workers=num_workers)
 
     # CHECKPOINT CALLBACKS
     validation_checkpoint = pl.callbacks.ModelCheckpoint(
@@ -159,7 +167,8 @@ if __name__ == "__main__":
         **val_check,
     )
 
-    run = search_for_run(args.CKPT)
+    run = search_for_run(args.CKPT, mode="last")
+    if run is None: run = search_for_run(args.CKPT, mode="best")
     if run is not None:
         step = torch.load(run, map_location='cpu')["global_step"]
         trainer.fit_loop.epoch_loop._batches_that_stepped = step
